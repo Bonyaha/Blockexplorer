@@ -21,16 +21,59 @@ const alchemy = new Alchemy(settings);
 
 function App() {
   const [blockNumber, setBlockNumber] = useState();
+  const [blockDetails, setBlockDetails] = useState();
+  const [transactions, setTransactions] = useState([]);
+  const [selectedTransaction, setSelectedTransaction] = useState(null);
 
   useEffect(() => {
-    async function getBlockNumber() {
-      setBlockNumber(await alchemy.core.getBlockNumber());
+    async function fetchBlockData() {
+      const currentBlockNumber = await alchemy.core.getBlockNumber();
+      const block = await alchemy.core.getBlockWithTransactions();
+      console.log(currentBlockNumber);
+      console.log(block);
+
+      setBlockNumber(currentBlockNumber);
+      setBlockDetails(block)
+      setTransactions(block.transactions)
     }
 
-    getBlockNumber();
-  });
+    fetchBlockData();
+  }, []);
 
-  return <div className="App">Block Number is: {blockNumber}</div>;
+  return (
+    <div className="App">
+      <h1>Ethereum Block Explorer</h1>
+      <div>
+        <h2>Current Block Number: {blockNumber}</h2>
+        {blockDetails && (
+          <div>
+            <h3>Block details:</h3>
+            <p>Hash: {blockDetails.hash}</p>
+            <p>Timestamp: {new Date(blockDetails.timestamp * 1000).toLocaleString()}</p>
+            <p>Transactions: {blockDetails.transactions.length}</p>
+          </div>
+        )}
+        <h3>Transactions</h3>
+        <ul>
+          {transactions.map(tx=>(
+              <li key={tx.hash} onClick={() => setSelectedTransaction(tx)}>
+                Transaction hash: {tx.hash}
+              </li>
+          )
+          )}
+        </ul>
+        {selectedTransaction && (
+          <div>
+            <h4>Transaction Details</h4>
+            <p>Hash: {selectedTransaction.hash}</p>
+            <p>From: {selectedTransaction.from}</p>
+            <p>To: {selectedTransaction.to}</p>
+            <p>Value: {selectedTransaction.value.toString()} wei</p>
+          </div>
+        )}
+      </div>
+    </div>
+  )
 }
 
 export default App;
