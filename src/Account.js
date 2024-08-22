@@ -1,5 +1,4 @@
 import { Alchemy, Network,Utils } from 'alchemy-sdk';
-import { formatEther } from 'ethers';
 import { useEffect, useState } from 'react';
 
 import './App.css';
