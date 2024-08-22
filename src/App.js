@@ -24,8 +24,9 @@ function App() {
   const [blockDetails, setBlockDetails] = useState();
   const [transactions, setTransactions] = useState([]);
   const [selectedTransaction, setSelectedTransaction] = useState(null);
+  const [latestBlocks, setLatestBlocks] = useState();
 
-  useEffect(() => {
+  /* useEffect(() => {
     async function fetchBlockData() {
       const currentBlockNumber = await alchemy.core.getBlockNumber();
       const block = await alchemy.core.getBlockWithTransactions();
@@ -38,7 +39,24 @@ function App() {
     }
 
     fetchBlockData();
-  }, []);
+  }, []); */
+  useEffect(() => {
+    let blockArray = [];
+    let transactionArray = [];
+    const getLatestBlocks = async () => {
+      const currentBlockNumber = await alchemy.core.getBlockNumber();
+      setBlockNumber(currentBlockNumber);
+
+      for(let i = 0; i < currentBlock){
+        const block = await alchemy.core.getBlock(currentBlockNumber - i)
+        blockArray.push(block)
+      }
+      setLatestBlocks(blockArray);
+      console.log("latest blocks: ", latestBlocks);
+    }
+
+    getLatestBlocks()
+  })
 
   return (
     <div className="App">
@@ -55,10 +73,10 @@ function App() {
         )}
         <h3>Transactions</h3>
         <ul>
-          {transactions.map(tx=>(
-              <li key={tx.hash} onClick={() => setSelectedTransaction(tx)}>
-                Transaction hash: {tx.hash}
-              </li>
+          {transactions.map(tx => (
+            <li key={tx.hash} onClick={() => setSelectedTransaction(tx)}>
+              Transaction hash: {tx.hash}
+            </li>
           )
           )}
         </ul>
