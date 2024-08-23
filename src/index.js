@@ -3,7 +3,12 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './index.css';
 import App from './App';
+/* import Transaction from './Transaction';
+import Block from './Block';
 import Account from './Account';
+import Address from './Address';
+import BlockTransactions from './BlockTransactions'; */
+
 import reportWebVitals from './reportWebVitals';
 
 // Create a root.
@@ -14,8 +19,7 @@ root.render(
     <Router>
       <Routes>
         <Route path="/" element={<App />} />
-        <Route path="/accounts" element={<Account />} />
-        {/* <Route path="/" element={<Home />} />
+        {/* <Route path="/accounts" element={<Account />} />       
         <Route path="/block/:id" element={<Block />} />
         <Route path="/transaction/:id" element={<Transaction />} />
         <Route path="/address/:id" element={<Address />} />

@@ -1,5 +1,6 @@
 import { Alchemy, Network } from 'alchemy-sdk';
 import { useEffect, useState } from 'react';
+import { Link } from "react-router-dom";
 
 import './App.css';
 
@@ -24,7 +25,8 @@ function App() {
   const [blockDetails, setBlockDetails] = useState();
   const [transactions, setTransactions] = useState([]);
   const [selectedTransaction, setSelectedTransaction] = useState(null);
-  const [latestBlocks, setLatestBlocks] = useState();
+  const [latestBlocks, setLatestBlocks] = useState([]);
+  const [latestTransactions, setLatestTranscations] = useState([])
 
   /* useEffect(() => {
     async function fetchBlockData() {
@@ -42,26 +44,41 @@ function App() {
   }, []); */
   useEffect(() => {
     let blockArray = [];
-    let transactionArray = [];
+    
     const getLatestBlocks = async () => {
       const currentBlockNumber = await alchemy.core.getBlockNumber();
-      setBlockNumber(currentBlockNumber);
+      console.log(currentBlockNumber);
+      
+      setBlockNumber(currentBlockNumber)
 
-      for(let i = 0; i < currentBlock){
+      for (let i = 0; i < 10; i++) {
         const block = await alchemy.core.getBlock(currentBlockNumber - i)
         blockArray.push(block)
       }
+      console.log(blockArray);
+      
       setLatestBlocks(blockArray);
-      console.log("latest blocks: ", latestBlocks);
+      
+    }
+   
+    const getLatestTransactions = async () => {
+      const block = await alchemy.core.getBlockWithTransactions();
+      const latestTransactions = block.transactions.slice(0, 15)
+      setLatestTranscations(latestTransactions)
+      console.log(latestTransactions);
+      
     }
 
     getLatestBlocks()
-  })
+    getLatestTransactions()
+  },[])
+
+  
 
   return (
     <div className="App">
       <h1>Ethereum Block Explorer</h1>
-      <div>
+      {/* <div>
         <h2>Current Block Number: {blockNumber}</h2>
         {blockDetails && (
           <div>
@@ -89,6 +106,19 @@ function App() {
             <p>Value: {selectedTransaction.value.toString()} wei</p>
           </div>
         )}
+      </div>
+*/}
+      <h3>Latest Blocks</h3>
+      {latestBlocks.map((block,i)=>(
+        <div key={i}>
+        <h3>Block<Link to={`/block/${block.number}`}>{block.number}</Link></h3>
+        <h3>Fee recipient <Link to={`/address/${block.miner}`}>{block.miner.slice(0,10)}...</Link></h3>
+        <h3>Number of transactions: {block.transactions.length}</h3>
+        </div>
+      ))
+      }
+      <div>
+        <footer>Made by me :) </footer>
       </div>
     </div>
   )
