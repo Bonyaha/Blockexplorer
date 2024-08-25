@@ -108,38 +108,78 @@ function App() {
 
 
   return (
-    <div className="App">
-      <h1>Ethereum Block Explorer</h1>
-      {!latestTransactions || !latestBlocks ? (
-        <div> Loading... </div>
-      ) : (
-        <>
+    <div className="App container mt-5">
+      <h1 className="text-center mb-4">Ethereum Block Explorer</h1>
+
+      <div className="d-flex justify-content-between flex-wrap">
+        <div className="block-container p-3 flex-grow-1 me-2 mb-3">
           <h3>Latest Blocks</h3>
-          {latestBlocks.map((block, i) => (
-            <div key={i}>
-              <h3>Block<Link to={`/block/${block.number}`}>{block.number}</Link></h3>
-              <h3>Fee recipient <Link to={`/address/${block.miner}`}>{block.miner.slice(0, 10)}...</Link></h3>
-              <h3>Number of transactions: {block.transactions.length}</h3>
-            </div>
-          ))
-          }
+          <table className="table table-striped">
+            <thead>
+              <tr>
+                <th>Block</th>
+                <th>Fee Recipient</th>
+                <th>Transactions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {latestBlocks.map((block, i) => (
+                <tr key={i}>
+                  <td>
+                    <Link to={`/block/${block.number}`}>{block.number}</Link>
+                  </td>
+                  <td>
+                    <Link to={`/address/${block.miner}`}>
+                      {block.miner.slice(0, 10)}...
+                    </Link>
+                  </td>
+                  <td>{block.transactions.length}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div className="block-container p-3 flex-grow-1 mb-3">
           <h3>Latest Transactions</h3>
-          {latestTransactions.map((transaction, i) => (
-            <div key={i}>
-              <h3>Hash<Link to={`/transaction/${transaction.hash}`}>{transaction.hash.slice(0, 15)}...</Link></h3>
-              <h3>From <Link to={`/address/${transaction.from}`}>{transaction.from.slice(0, 10)}...</Link></h3>
-              <h3>To: <Link to={`/address/${transaction.to}`}>{transaction.to ? transaction.to.slice(0, 10) + '...' : 'N/A'}</Link></h3>
-              <h3>{Utils.formatEther(transaction.value)} ETH</h3>
-            </div>
-          ))
-          }
-        </>
-      )
-      }
-      <div>
-        <footer>Made by me :) </footer>
+          <table className="table table-striped">
+            <thead>
+              <tr>
+                <th>Hash</th>
+                <th>From</th>
+                <th>To</th>
+                <th>Value (ETH)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {latestTransactions.map((transaction, i) => (
+                <tr key={i}>
+                  <td>
+                    <Link to={`/transaction/${transaction.hash}`}>
+                      {transaction.hash.slice(0, 15)}...
+                    </Link>
+                  </td>
+                  <td>
+                    <Link to={`/address/${transaction.from}`}>
+                      {transaction.from.slice(0, 10)}...
+                    </Link>
+                  </td>
+                  <td>
+                    <Link to={`/address/${transaction.to}`}>
+                      {transaction.to ? transaction.to.slice(0, 10) + '...' : 'N/A'}
+                    </Link>
+                  </td>
+                  <td>{Utils.formatEther(transaction.value)} ETH</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
+
+      <footer className="text-center mt-5">Made by me :)</footer>
     </div>
+
   )
 
 
