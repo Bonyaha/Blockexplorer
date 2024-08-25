@@ -1,4 +1,4 @@
-import { Alchemy, Network } from 'alchemy-sdk';
+import { Alchemy, Network, Utils } from 'alchemy-sdk';
 import { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
 
@@ -28,100 +28,121 @@ function App() {
   const [latestBlocks, setLatestBlocks] = useState([]);
   const [latestTransactions, setLatestTranscations] = useState([])
 
-  /* useEffect(() => {
-    async function fetchBlockData() {
-      const currentBlockNumber = await alchemy.core.getBlockNumber();
-      const block = await alchemy.core.getBlockWithTransactions();
-      console.log(currentBlockNumber);
-      console.log(block);
-
-      setBlockNumber(currentBlockNumber);
-      setBlockDetails(block)
-      setTransactions(block.transactions)
-    }
-
-    fetchBlockData();
-  }, []); */
   useEffect(() => {
     let blockArray = [];
-    
-    const getLatestBlocks = async () => {
-      const currentBlockNumber = await alchemy.core.getBlockNumber();
-      console.log(currentBlockNumber);
-      
-      setBlockNumber(currentBlockNumber)
 
-      for (let i = 0; i < 10; i++) {
-        const block = await alchemy.core.getBlock(currentBlockNumber - i)
-        blockArray.push(block)
+    const getLatestBlocks = async () => {
+      try {
+        const currentBlockNumber = await alchemy.core.getBlockNumber();
+        console.log(currentBlockNumber);
+
+        setBlockNumber(currentBlockNumber)
+
+        const blockPromises = Array.from({ length: 10 }, (_, i) => {
+          return alchemy.core.getBlockWithTransactions(currentBlockNumber - i)
+        })
+        const blocks = await Promise.all(blockPromises)
+        console.log(blocks);
+
+        /* const blocksWithRewards = await Promise.all(blocks.map(async (block) => {
+          const blockReward = await calculateBlockReward(block)
+          return { ...block, reward: blockReward }
+        }))
+
+        console.log(blocksWithRewards); */
+
+        setLatestBlocks(blocks);
       }
-      console.log(blockArray);
-      
-      setLatestBlocks(blockArray);
-      
+      catch (error) {
+        console.error('Error fetching block data:', error.message);
+
+      }
+
     }
-   
+
     const getLatestTransactions = async () => {
-      const block = await alchemy.core.getBlockWithTransactions();
-      const latestTransactions = block.transactions.slice(0, 15)
-      setLatestTranscations(latestTransactions)
-      console.log(latestTransactions);
-      
+      try {
+        const block = await alchemy.core.getBlockWithTransactions();
+        const latestTransactions = block.transactions.slice(0, 15)
+        setLatestTranscations(latestTransactions)
+        console.log(latestTransactions);
+      }
+      catch (error) {
+        console.error('Error fetching block data:', error.message);
+      }
+
+    }
+
+    const calculateBlockReward = async (block) => {
+      let totalTips = 0;
+      //console.log('block is recieved: ', block);
+
+      const receiptsPromises = block.transactions.slice(0, 10).map(async (tx) => {
+        const receipt = await alchemy.core.getTransactionReceipt(tx.hash)
+
+        const gasUsed = receipt.gasUsed ? Utils.formatUnits(receipt.gasUsed, 'wei') : 0
+        const maxPriorityFeePerGas = tx.maxPriorityFeePerGas ? Utils.formatUnits(tx.maxPriorityFeePerGas, 'wei') : 0
+
+        const tip = gasUsed * maxPriorityFeePerGas
+        return tip
+      })
+
+      const receiptsTips = await Promise.all(receiptsPromises)
+      // console.log('receiptsTips are: ', receiptsTips);
+
+      /* receiptsTips.forEach(tip=>{
+        totalTips += tip 
+    }) */
+      totalTips += receiptsTips.reduce((acc, tip) => {
+        return acc + tip
+      }, 0)
+      //console.log('totalTips for block is: ', totalTips);
+
+      return Utils.formatEther(totalTips.toString());
+
     }
 
     getLatestBlocks()
     getLatestTransactions()
-  },[])
+  }, [])
 
-  
 
   return (
     <div className="App">
       <h1>Ethereum Block Explorer</h1>
-      {/* <div>
-        <h2>Current Block Number: {blockNumber}</h2>
-        {blockDetails && (
-          <div>
-            <h3>Block details:</h3>
-            <p>Hash: {blockDetails.hash}</p>
-            <p>Timestamp: {new Date(blockDetails.timestamp * 1000).toLocaleString()}</p>
-            <p>Transactions: {blockDetails.transactions.length}</p>
-          </div>
-        )}
-        <h3>Transactions</h3>
-        <ul>
-          {transactions.map(tx => (
-            <li key={tx.hash} onClick={() => setSelectedTransaction(tx)}>
-              Transaction hash: {tx.hash}
-            </li>
-          )
-          )}
-        </ul>
-        {selectedTransaction && (
-          <div>
-            <h4>Transaction Details</h4>
-            <p>Hash: {selectedTransaction.hash}</p>
-            <p>From: {selectedTransaction.from}</p>
-            <p>To: {selectedTransaction.to}</p>
-            <p>Value: {selectedTransaction.value.toString()} wei</p>
-          </div>
-        )}
-      </div>
-*/}
-      <h3>Latest Blocks</h3>
-      {latestBlocks.map((block,i)=>(
-        <div key={i}>
-        <h3>Block<Link to={`/block/${block.number}`}>{block.number}</Link></h3>
-        <h3>Fee recipient <Link to={`/address/${block.miner}`}>{block.miner.slice(0,10)}...</Link></h3>
-        <h3>Number of transactions: {block.transactions.length}</h3>
-        </div>
-      ))
+      {!latestTransactions || !latestBlocks ? (
+        <div> Loading... </div>
+      ) : (
+        <>
+          <h3>Latest Blocks</h3>
+          {latestBlocks.map((block, i) => (
+            <div key={i}>
+              <h3>Block<Link to={`/block/${block.number}`}>{block.number}</Link></h3>
+              <h3>Fee recipient <Link to={`/address/${block.miner}`}>{block.miner.slice(0, 10)}...</Link></h3>
+              <h3>Number of transactions: {block.transactions.length}</h3>
+            </div>
+          ))
+          }
+          <h3>Latest Transactions</h3>
+          {latestTransactions.map((transaction, i) => (
+            <div key={i}>
+              <h3>Hash<Link to={`/transaction/${transaction.hash}`}>{transaction.hash.slice(0, 15)}...</Link></h3>
+              <h3>From <Link to={`/address/${transaction.from}`}>{transaction.from.slice(0, 10)}...</Link></h3>
+              <h3>To: <Link to={`/address/${transaction.to}`}>{transaction.to ? transaction.to.slice(0, 10) + '...' : 'N/A'}</Link></h3>
+              <h3>{Utils.formatEther(transaction.value)} ETH</h3>
+            </div>
+          ))
+          }
+        </>
+      )
       }
       <div>
         <footer>Made by me :) </footer>
       </div>
     </div>
   )
+
+
 }
 
 export default App;
