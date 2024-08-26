@@ -169,7 +169,7 @@ function App() {
                       {transaction.to ? transaction.to.slice(0, 10) + '...' : 'N/A'}
                     </Link>
                   </td>
-                  <td>{Utils.formatEther(transaction.value)} ETH</td>
+                  <td>{Utils.formatEther(transaction.value).slice(0, 10)} ETH</td>
                 </tr>
               ))}
             </tbody>
