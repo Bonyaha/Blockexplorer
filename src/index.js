@@ -1,13 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes,Link } from 'react-router-dom';
 import './index.css';
-import App from './App';
-/* import Transaction from './Transaction';
-import Block from './Block';
-import Account from './Account';
-import Address from './Address';
-import BlockTransactions from './BlockTransactions'; */
+import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+import App from './App.js';
 
 import reportWebVitals from './reportWebVitals';
 
@@ -16,16 +14,12 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
   <React.StrictMode>
+    
+    
     <Router>
-      <Routes>
-        <Route path="/" element={<App />} />
-        {/* <Route path="/accounts" element={<Account />} />       
-        <Route path="/block/:id" element={<Block />} />
-        <Route path="/transaction/:id" element={<Transaction />} />
-        <Route path="/address/:id" element={<Address />} />
-        <Route path="/blockTransactions/:id" element={<BlockTransactions />} /> */}
-      </Routes>
+    <App />      
     </Router>
+    
   </React.StrictMode>
 );
 

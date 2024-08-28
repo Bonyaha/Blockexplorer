@@ -38,7 +38,8 @@
 }
 
 .block-container {
-  background-color: #f8f9fa;
+  /* background-color: #f8f9fa; */
+  background-color: #c7ced4;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   width: 48%; /* Ensures two blocks fit side by side */
@@ -53,4 +54,20 @@
   .block-container {
     width: 100%; /* Stacks them on small screens */
   }
+}
+
+/* Add padding to table cells to increase distance between columns */
+table td, table th {
+  padding: 12px 20px; /* Adjust these values as needed */
+}
+
+/* Optional: Add more space between rows */
+table tr {
+  margin-bottom: 10px; /* Space between rows */
+}
+
+/* Optional: Add border spacing for more control */
+table {
+  border-spacing: 0 10px; /* Space between columns and rows */
+  border-collapse: separate; /* Allows border-spacing to work */
 }
