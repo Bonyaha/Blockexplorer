@@ -2,12 +2,15 @@ import { useParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import alchemy from '../alchemyInstance'
 import { Utils } from 'alchemy-sdk';
+import axios from 'axios';
 
 const Address = () => {
     const { id } = useParams();
     const [balance, setBalance] = useState("")
     const [tokens, setTokens] = useState([])
     const [transactions, setTransactions] = useState([])
+    const [ethPrice, setEthPrice] = useState(0)
+
 
     useEffect(() => {
         const getAddress = async () => {
@@ -17,7 +20,7 @@ const Address = () => {
             const tbalance = await alchemy.core.getTokenBalances(id)
             console.log(tbalance)
             const nonZeroTokenBalance = tbalance.tokenBalances.filter(token => parseInt(token.tokenBalance) !== 0)
-           // console.log("nonZero: ", nonZeroTokenBalance)
+            // console.log("nonZero: ", nonZeroTokenBalance)
 
             let tokensArray = []
             for (let i = 0; i < nonZeroTokenBalance.length; i++) {
@@ -51,20 +54,47 @@ const Address = () => {
                 });
 
                 //console.log(transfers.transfers[1].value.toString().slice(0,10));
+                
                 setTransactions(transfers.transfers)
+                console.log(transfers.transfers[0]);
             } catch (error) {
                 console.error('Error fetching transactions:', error);
                 return [];
             }
         }
+
+        const calculateEthPrice = async () => {
+            try {
+                const apiKey = process.env.REACT_APP_ETHERSCAN_API_KEY
+                //console.log("Etherscan API Key:", apiKey)
+                const response = await axios.get(`https://api.etherscan.io/api`, {
+                    params: {
+                        module: 'stats',
+                        action: 'ethprice',
+                        apikey: apiKey,
+                    },
+                })
+                const ethUsd = response.data.result.ethusd
+                console.log(ethUsd);
+                setEthPrice(ethUsd)
+            }
+            catch (error) {
+                console.error('Error fetching block reward data:', error.message);
+            }
+        }
+
         getAddress()
         getAllTransactionsFromAddress(id)
+        calculateEthPrice()
     }, [id])
 
     //console.log("id: ", id);
     //console.log("balance: ", balance);
-    console.log("tokens Array: ", tokens);
-
+    //console.log("tokens Array: ", tokens);
+   if(transactions){
+    console.log(transactions[1])
+   }
+    
 
     return (
         <div className="App container mt-5">
@@ -77,7 +107,7 @@ const Address = () => {
                     </tr>
                     <tr>
                         <td>Balance:</td>
-                        <td className="text-end" >{balance.slice(0, 7)} ETH</td>
+                        <td className="text-end" >{balance.slice(0, 7)} ETH ({(balance * ethPrice).toFixed(2)} USD)</td>
                     </tr>
                 </tbody>
             </table>

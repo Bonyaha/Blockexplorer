@@ -10,12 +10,16 @@ const Transaction = () => {
     const { id } = useParams();
     const [transaction, setTransaction] = useState();
     const [timestamp, setTimestamp] = useState('');
-    const [formattedValue, setValue] = useState();
+    const [formattedValue, setFormattedValue] = useState();
     const [ethPrice, setEthPrice] = useState(0)
 
     //const location = useLocation();
     let { state: { value } } = useLocation()
-    console.log(Utils.formatEther(value));
+    console.log(value);
+    console.log(typeof value);
+    
+    
+    //console.log(Utils.formatEther(value));
     
     let txFee
 
@@ -45,10 +49,6 @@ const Transaction = () => {
              console.log(ethUsd);
              setEthPrice(ethUsd)
              
-          
-              /* const ethPrice = Utils.formatEther(ethPriceData)
-              console.log(ethPrice)
-              return ethPrice */
             }
             catch (error) {
               console.error('Error fetching block reward data:', error.message);
@@ -56,9 +56,18 @@ const Transaction = () => {
           }
 
         //txFee = Utils.formatEther(transaction.gasUsed.mul(transaction.effectiveGasPrice))
-        getTransaction()
-        setValue(Utils.formatEther(value))
+        getTransaction()        
         calculateEthPrice()
+        if (value !== null) {
+            if (typeof value === 'number') {
+                setFormattedValue(value);
+            } else {
+                setFormattedValue(Utils.formatEther(value));
+            }
+        } else {
+            setFormattedValue('0'); // or '0 ETH' depending on how you want to display it
+        }
+        
     }, [id])
 
     //console.log(state)
@@ -79,6 +88,7 @@ const Transaction = () => {
 if(transaction){
     txFee = Utils.formatEther(transaction.gasUsed.mul(transaction.effectiveGasPrice))
 }
+
     return (
         <div className="App container mt-5">
             {!transaction ? (
@@ -115,7 +125,7 @@ if(transaction){
                             </tr>
                             <tr>
                                 <td className="text-start">Value: </td>
-                                <td className="text-end">{formattedValue} ETH ({(formattedValue*ethPrice).toFixed(2)}USD)</td>
+                                <td className="text-end">{formattedValue} ETH ({(formattedValue*ethPrice).toFixed(2)} USD)</td>
                             </tr>
                             <tr>
                                 <td className="text-start">Gas Used: </td>
@@ -127,7 +137,7 @@ if(transaction){
                             </tr>
                             <tr>
                                 <td className="text-start">Transaction Fee:</td>
-                                <td className="text-end">{txFee} ETH ({(txFee*ethPrice).toFixed(2)}USD)</td>
+                                <td className="text-end">{txFee} ETH ({(txFee*ethPrice).toFixed(2)} USD)</td>
                             </tr>
                         </tbody>
                     </table>
