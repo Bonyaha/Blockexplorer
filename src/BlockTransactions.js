@@ -38,7 +38,7 @@ const BlockTransactions = () => {
                             {block.transactions.map((transaction, i) => (
                                 <tr key={i}>
                                     <td>
-                                        <Link to={`/transaction/${transaction.hash}`}>
+                                        <Link to={`/transaction/${transaction.hash}`} state={{ value: transaction.value }}>
                                             {transaction.hash.slice(0, 10)}...
                                         </Link>
                                     </td>

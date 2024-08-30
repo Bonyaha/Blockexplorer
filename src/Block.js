@@ -2,17 +2,52 @@ import { format, formatDistanceToNow } from 'date-fns';
 import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import alchemy from './alchemyInstance'
+import axios from 'axios';
+import { Utils } from 'alchemy-sdk';
 //import './App.css';
 
 const Block = () => {
     const { id } = useParams();
     const [block, setBlock] = useState(null);
     //console.log(id)
+
     useEffect(() => {
         const getBlock = async () => {
             const block = await alchemy.core.getBlockWithTransactions(parseInt(id))
-            setBlock(block)
+            const blockReward = await calculateBlockReward(block.number)
+            console.log(blockReward);
+            
+            const blockWithReward = { ...block, reward: blockReward }
+            setBlock(blockWithReward)
         }
+
+        const calculateBlockReward = async (blockNumber) => {      
+            try {
+              const apiKey = process.env.REACT_APP_ETHERSCAN_API_KEY
+              //console.log("Etherscan API Key:", apiKey)
+              const response = await axios.get(`https://api.etherscan.io/api`,{
+                params: {
+                  module: 'block',
+                  action: 'getblockreward',
+                  blockno: blockNumber,
+                  apikey: apiKey,
+                },
+              })
+              const blockRewardData = response.data.result.blockReward
+              /* if (!blockRewardData) {
+                throw new Error('Block reward data is undefined or null');
+              } */
+            // console.log(blockRewardData);
+             
+          
+              const blockRewardEth = Utils.formatEther(blockRewardData)
+              console.log(blockRewardEth)
+              return blockRewardEth
+            }
+            catch (error) {
+              console.error('Error fetching block reward data:', error.message);
+            }
+          }
         getBlock()
     }, [id])
 
@@ -72,6 +107,10 @@ const Block = () => {
                     <tr>
                         <td>Fee Recipient:</td>
                         <td className="text-end"><Link to={`/address/${block.miner}`}>{block.miner}</Link></td>
+                    </tr>
+                    <tr>
+                        <td>Block Reward:</td>
+                        <td className="text-end">{block.reward} ETH</td>
                     </tr>
                     <tr>
                         <td>Hash:</td>

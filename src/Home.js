@@ -146,11 +146,12 @@ function App() {
     <div className="App container mt-5">
       <div className="d-flex justify-content-between flex-wrap">
         <div className="block-container p-3 flex-grow-1 me-2 mb-3">
-        {!latestBlocks ? (
+        
+          <h3>Latest Blocks</h3>
+          {!latestBlocks ? (
             <div> Loading... </div>
         ) : (
           <>
-          <h3>Latest Blocks</h3>
           <table className="table table-striped">
             <thead>
               <tr>
@@ -194,7 +195,7 @@ function App() {
               {latestTransactions.map((transaction, i) => (
                 <tr key={i}>
                   <td>
-                    <Link to={`/transaction/${transaction.hash}`}>
+                    <Link to={`/transaction/${transaction.hash}`} state={{ value: transaction.value }}>
                       {transaction.hash.slice(0, 10)}...
                     </Link>
                   </td>
