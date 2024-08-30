@@ -1,4 +1,4 @@
-import alchemy from './alchemyInstance'
+import alchemy from '../alchemyInstance'
 import { Utils } from 'alchemy-sdk';
 import { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";

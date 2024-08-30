@@ -1,7 +1,7 @@
 import { format, formatDistanceToNow } from 'date-fns';
 import { Link, useParams, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import alchemy from './alchemyInstance'
+import alchemy from '../alchemyInstance'
 import axios from 'axios';
 import { Utils } from 'alchemy-sdk';
 
