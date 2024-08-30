@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import alchemy from '../alchemyInstance'
 import axios from 'axios';
 import { Utils } from 'alchemy-sdk';
-//import './App.css';
 
 const Block = () => {
     const { id } = useParams();

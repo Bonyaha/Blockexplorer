@@ -1,4 +1,3 @@
-// src/alchemyInstance.js
 import { Alchemy, Network } from 'alchemy-sdk';
 
 const settings = {

@@ -2,9 +2,7 @@ import alchemy from '../alchemyInstance'
 import { Utils } from 'alchemy-sdk';
 import { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
-import axios from 'axios';
 
-//import './App.css';
 
 // Refer to the README doc for more information about using API
 // keys in client-side code. You should never do this in production
@@ -31,24 +29,7 @@ function App() {
         const currentBlockNumber = await alchemy.core.getBlockNumber();
         console.log(currentBlockNumber);
 
-        //setBlockNumber(currentBlockNumber)
-
-        /* const blockPromises = Array.from({ length: 10 }, async(_, i) => {
-          return await alchemy.core.getBlockWithTransactions(currentBlockNumber - i)
-        })
-        console.log(blockPromises)
-        const blocks = await Promise.all(blockPromises)
-
-         const blocksWithRewards = await Promise.all(blocks.map(async (block) => {
-          const blockReward = await calculateBlockReward(block.number)
-          return { ...block, reward: blockReward }
-        }))
- 
-         //console.log(blocksWithRewards);
-
-        //setLatestBlocks(blocks);
-        
-        */
+        //setBlockNumber(currentBlockNumber)        
 
         for (let i = 0; i < 10; i++){
           const block = await alchemy.core.getBlock(currentBlockNumber - i);
@@ -81,61 +62,7 @@ function App() {
         console.error('Error fetching block data:', error.message);
       }
 
-    }
-
-    const calculateBlockReward = async (blockNumber) => {
-      /* let totalTips = 0;
-      //console.log('block is recieved: ', block);
-
-      const receiptsPromises = block.transactions.slice(0, 10).map(async (tx) => {
-        const receipt = await alchemy.core.getTransactionReceipt(tx.hash)
-
-        const gasUsed = receipt.gasUsed ? Utils.formatUnits(receipt.gasUsed, 'wei') : 0
-        const maxPriorityFeePerGas = tx.maxPriorityFeePerGas ? Utils.formatUnits(tx.maxPriorityFeePerGas, 'wei') : 0
-
-        const tip = gasUsed * maxPriorityFeePerGas
-        return tip
-      })
-
-      const receiptsTips = await Promise.all(receiptsPromises)
-      // console.log('receiptsTips are: ', receiptsTips);
-
-      /* receiptsTips.forEach(tip=>{
-        totalTips += tip 
-    }) 
-      totalTips += receiptsTips.reduce((acc, tip) => {
-        return acc + tip
-      }, 0)
-      //console.log('totalTips for block is: ', totalTips);
-
-      return Utils.formatEther(totalTips.toString()); */
-
-      try {
-        const apiKey = process.env.REACT_APP_ETHERSCAN_API_KEY
-        //console.log("Etherscan API Key:", apiKey)
-        const response = await axios.get(`https://api.etherscan.io/api`,{
-          params: {
-            module: 'block',
-            action: 'getblockreward',
-            blockno: blockNumber,
-            apikey: apiKey,
-          },
-        })
-        const blockRewardData = response.data
-        /* if (!blockRewardData) {
-          throw new Error('Block reward data is undefined or null');
-        } */
-       console.log(blockRewardData);
-       
-    
-        //const blockRewardEth = Utils.formatEther(blockRewardData)
-        //console.log(blockRewardEth)
-        return blockRewardData
-      }
-      catch (error) {
-        console.error('Error fetching block reward data:', error.message);
-      }
-    }
+    }    
 
     getLatestBlocks()
     getLatestTransactions()
