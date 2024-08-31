@@ -17,10 +17,10 @@ const Transaction = () => {
     let { state: { value } } = useLocation()
     console.log(value);
     console.log(typeof value);
-    
-    
+
+
     //console.log(Utils.formatEther(value));
-    
+
     let txFee
 
     useEffect(() => {
@@ -34,30 +34,30 @@ const Transaction = () => {
             const timestamp = block.timestamp
             setTimestamp(timestamp)
         }
-        const calculateEthPrice = async () => {      
+        const calculateEthPrice = async () => {
             try {
-              const apiKey = process.env.REACT_APP_ETHERSCAN_API_KEY
-              //console.log("Etherscan API Key:", apiKey)
-              const response = await axios.get(`https://api.etherscan.io/api`,{
-                params: {
-                  module: 'stats',
-                  action: 'ethprice',              
-                  apikey: apiKey,
-                },
-              })
-              const ethUsd = response.data.result.ethusd
-             console.log(ethUsd);
-             setEthPrice(ethUsd)
-             
+                const apiKey = process.env.REACT_APP_ETHERSCAN_API_KEY
+                //console.log("Etherscan API Key:", apiKey)
+                const response = await axios.get(`https://api.etherscan.io/api`, {
+                    params: {
+                        module: 'stats',
+                        action: 'ethprice',
+                        apikey: apiKey,
+                    },
+                })
+                const ethUsd = response.data.result.ethusd
+                console.log(ethUsd);
+                setEthPrice(ethUsd)
+
             }
             catch (error) {
-              console.error('Error fetching block reward data:', error.message);
+                console.error('Error fetching block reward data:', error.message);
             }
-          }
+        }
 
-        //txFee = Utils.formatEther(transaction.gasUsed.mul(transaction.effectiveGasPrice))
-        getTransaction()        
+        getTransaction()
         calculateEthPrice()
+
         if (value !== null) {
             if (typeof value === 'number') {
                 setFormattedValue(value);
@@ -67,11 +67,10 @@ const Transaction = () => {
         } else {
             setFormattedValue('0'); // or '0 ETH' depending on how you want to display it
         }
-        
+
     }, [id])
 
-    //console.log(state)
-    //console.log(pathname);
+    
     const formatTimestamp = (timestamp) => {
         const date = new Date(timestamp * 1000); // Convert to milliseconds
         const formattedDate = format(date, "MMM-dd-yyyy hh:mm:ss a 'UTC'"); // e.g., Aug-27-2024 05:39:35 AM UTC
@@ -79,15 +78,13 @@ const Transaction = () => {
 
         return `${relativeTime} (${formattedDate})`;
     }
-    const formatNumber = (num) => {
-        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','); // Add commas as thousands separators
-    }
+
+    const transactionGasUsed = new Intl.NumberFormat("en-US").format(transaction.gasUsed)
     
-      //console.log(ethPrice);
-      
-if(transaction){
-    txFee = Utils.formatEther(transaction.gasUsed.mul(transaction.effectiveGasPrice))
-}
+
+    if (transaction) {
+        txFee = Utils.formatEther(transaction.gasUsed.mul(transaction.effectiveGasPrice))
+    }
 
     return (
         <div className="App container mt-5">
@@ -125,19 +122,19 @@ if(transaction){
                             </tr>
                             <tr>
                                 <td className="text-start">Value: </td>
-                                <td className="text-end">{formattedValue} ETH ({(formattedValue*ethPrice).toFixed(2)} USD)</td>
+                                <td className="text-end">{formattedValue} ETH ({(formattedValue * ethPrice).toFixed(2)} USD)</td>
                             </tr>
                             <tr>
                                 <td className="text-start">Gas Used: </td>
-                                <td className="text-end">{formatNumber(transaction.gasUsed.toString())}</td>
+                                <td className="text-end">{transactionGasUsed}</td>
                             </tr>
                             <tr>
                                 <td className="text-start">Gas Price: </td>
-                                <td className="text-end">{Utils.formatEther(transaction.effectiveGasPrice)} ETH</td>
+                                <td className="text-end">{Utils.formatUnits(transaction.effectiveGasPrice, 'gwei')} Gwei ({Utils.formatEther(transaction.effectiveGasPrice)}) ETH</td>
                             </tr>
                             <tr>
                                 <td className="text-start">Transaction Fee:</td>
-                                <td className="text-end">{txFee} ETH ({(txFee*ethPrice).toFixed(2)} USD)</td>
+                                <td className="text-end">{txFee} ETH ({(txFee * ethPrice).toFixed(2)} USD)</td>
                             </tr>
                         </tbody>
                     </table>

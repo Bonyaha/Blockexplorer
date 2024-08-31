@@ -54,7 +54,7 @@ const Address = () => {
                 });
 
                 //console.log(transfers.transfers[1].value.toString().slice(0,10));
-                
+
                 setTransactions(transfers.transfers)
                 console.log(transfers.transfers[0]);
             } catch (error) {
@@ -91,97 +91,114 @@ const Address = () => {
     //console.log("id: ", id);
     //console.log("balance: ", balance);
     //console.log("tokens Array: ", tokens);
-   if(transactions){
-    console.log(transactions[1])
-   }
-    
+
+
+    const formattedBalance = new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 }).format(balance)
+    const formattedBalanceUsd = new Intl.NumberFormat("en-US", {
+
+        style: "currency",
+        currency: "USD",
+    }).format(balance * ethPrice)
 
     return (
-        <div className="App container mt-5">
-            <table className="table table-striped">
-                <thead></thead>
-                <tbody>
-                    <tr>
-                        <td>Address:</td>
-                        <td className="text-end">{id}</td>
-                    </tr>
-                    <tr>
-                        <td>Balance:</td>
-                        <td className="text-end" >{balance.slice(0, 7)} ETH ({(balance * ethPrice).toFixed(2)} USD)</td>
-                    </tr>
-                </tbody>
-            </table>
-            <br />
+        <div className="App container">
             <div className="d-flex justify-content-between flex-wrap">
-            {!transactions ? (
-                <div>Loading...</div>
-            ) : (
-                <div className="block-container p-3 flex-grow-1 me-2 mb-3">
-                    <h3>Transactions</h3>
+               <div className="block-container p-3 flex-grow-1 me-2 mb-3">
                     <table className="table table-striped">
                         <thead>
                             <tr>
-                                <th>Hash</th>
-                                <th>From</th>
-                                <th>To</th>
-                                <th>Value (ETH)</th>
+                                <th className="text-middle">
+                                    Address
+                                </th>
+                                <th>
+                                    Balance
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
-                            {transactions.map((transaction, i) => (
-                                <tr key={i}>
-                                    <td>
-                                        <Link to={`/transaction/${transaction.hash}`} state={{ value: transaction.value }}>
-                                            {transaction.hash.slice(0, 10)}...
-                                        </Link>
-                                    </td>
-                                    <td>
-                                        <Link to={`/address/${transaction.from}`}>
-                                            {transaction.from.slice(0, 10)}...
-                                        </Link>
-                                    </td>
-                                    <td>
-                                        <Link to={`/address/${transaction.to}`}>
-                                            {transaction.to ? transaction.to.slice(0, 10) + '...' : 'N/A'}
-                                        </Link>
-                                    </td>
-                                    <td>{transaction.value ? transaction.value.toString().slice(0, 10) : 'N/A'} ETH</td>
-                                </tr>
-                            ))}
+                            <tr>
+                                <td className="text-middle">{id}</td>
+                                <td className="text-middle" >{formattedBalance} ETH ({formattedBalanceUsd})</td>
+                            </tr>
+
                         </tbody>
                     </table>
-                </div>
-            )}
-            <div className="block-container p-3 flex-grow-1 me-2 mb-3">
-            <h3>Tokens</h3>
-            {tokens.length === 0 ? (
-                ''
-            ) : (
-                <table className="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Symbol</th>
-                            <th>Balance</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {tokens.map((token, i) => (
-                            <tr key={i}>
-                                <td>
-                                    {token.name}
-                                </td>
-                                <td>
-                                    {token.symbol}
-                                </td>
-                                <td>{token.balance}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+                </div> 
 
-            )}
-            </div>
+                
+
+                <div className="block-container p-3 flex-grow-1 me-2 mb-3">
+                    <h3>Tokens</h3>
+                    {tokens.length === 0 ? (
+                        <div> Loading... </div>
+                    ) : (
+                        <table className="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Symbol</th>
+                                    <th>Balance</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {tokens.map((token, i) => (
+                                    <tr key={i}>
+                                        <td>
+                                            {token.name}
+                                        </td>
+                                        <td>
+                                            {token.symbol}
+                                        </td>
+                                        <td>{token.balance}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+
+                    )}
+                </div>
+
+                <div className="block-container p-3 flex-grow-1 mb-3">
+                <h3>Transactions</h3>
+                    {!transactions ? (
+                        <div>Loading...</div>
+                    ) : (
+                                                  
+                            <table className="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Hash</th>
+                                        <th>From</th>
+                                        <th>To</th>
+                                        <th>Value (ETH)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {transactions.map((transaction, i) => (
+                                        <tr key={i}>
+                                            <td>
+                                                <Link to={`/transaction/${transaction.hash}`} state={{ value: transaction.value }}>
+                                                    {transaction.hash.slice(0, 10)}...
+                                                </Link>
+                                            </td>
+                                            <td>
+                                                <Link to={`/address/${transaction.from}`}>
+                                                    {transaction.from.slice(0, 10)}...
+                                                </Link>
+                                            </td>
+                                            <td>
+                                                <Link to={`/address/${transaction.to}`}>
+                                                    {transaction.to ? transaction.to.slice(0, 10) + '...' : 'N/A'}
+                                                </Link>
+                                            </td>
+                                            <td>{transaction.value ? transaction.value.toString().slice(0, 10) : '0'} ETH</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                       
+                    )}
+                </div>
             </div>
 
         </div>

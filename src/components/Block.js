@@ -15,38 +15,38 @@ const Block = () => {
             const block = await alchemy.core.getBlockWithTransactions(parseInt(id))
             const blockReward = await calculateBlockReward(block.number)
             console.log(blockReward);
-            
+
             const blockWithReward = { ...block, reward: blockReward }
             setBlock(blockWithReward)
         }
 
-        const calculateBlockReward = async (blockNumber) => {      
+        const calculateBlockReward = async (blockNumber) => {
             try {
-              const apiKey = process.env.REACT_APP_ETHERSCAN_API_KEY
-              //console.log("Etherscan API Key:", apiKey)
-              const response = await axios.get(`https://api.etherscan.io/api`,{
-                params: {
-                  module: 'block',
-                  action: 'getblockreward',
-                  blockno: blockNumber,
-                  apikey: apiKey,
-                },
-              })
-              const blockRewardData = response.data.result.blockReward
-              /* if (!blockRewardData) {
-                throw new Error('Block reward data is undefined or null');
-              } */
-            // console.log(blockRewardData);
-             
-          
-              const blockRewardEth = Utils.formatEther(blockRewardData)
-              console.log(blockRewardEth)
-              return blockRewardEth
+                const apiKey = process.env.REACT_APP_ETHERSCAN_API_KEY
+                //console.log("Etherscan API Key:", apiKey)
+                const response = await axios.get(`https://api.etherscan.io/api`, {
+                    params: {
+                        module: 'block',
+                        action: 'getblockreward',
+                        blockno: blockNumber,
+                        apikey: apiKey,
+                    },
+                })
+                const blockRewardData = response.data.result.blockReward
+                /* if (!blockRewardData) {
+                  throw new Error('Block reward data is undefined or null');
+                } */
+                // console.log(blockRewardData);
+
+
+                const blockRewardEth = Utils.formatEther(blockRewardData)
+                console.log(blockRewardEth)
+                return blockRewardEth
             }
             catch (error) {
-              console.error('Error fetching block reward data:', error.message);
+                console.error('Error fetching block reward data:', error.message);
             }
-          }
+        }
         getBlock()
     }, [id])
 
@@ -60,9 +60,9 @@ const Block = () => {
         return `${relativeTime} (${formattedDate})`;
     }
 
-    const formatNumber = (num) => {
+   /*  const formatNumber = (num) => {
         return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','); // Add commas as thousands separators
-    }
+    } */
 
     const calculateGasPercentage = (gasUsed, gasLimit) => {
         return ((gasUsed / gasLimit) * 100).toFixed(2); // Calculate percentage and round to 2 decimal places
@@ -71,8 +71,9 @@ const Block = () => {
     if (!block) {
         return <div>Loading...</div>;
     }
-    const gasUsedFormatted = formatNumber(block.gasUsed.toString());
-    const gasLimitFormatted = formatNumber(block.gasLimit.toString());
+    /* const gasUsedFormatted = formatNumber(block.gasUsed.toString()); */
+    const gasUsedFormatted = new Intl.NumberFormat("en-US").format(block.gasUsed)
+    const gasLimitFormatted = new Intl.NumberFormat("en-US").format(block.gasLimit);
     const gasPercentage = calculateGasPercentage(block.gasUsed, block.gasLimit)
 
     return (
@@ -83,7 +84,7 @@ const Block = () => {
             </Link>
             <Link to={`/block/${block.number + 1}`}><button className="btn btn-primary">Next Block</button>
             </Link>
-            
+
             <table className="table table-striped">
                 <thead></thead>
                 <tbody>

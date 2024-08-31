@@ -17,7 +17,7 @@ import { Link } from "react-router-dom";
 //   https://docs.alchemy.com/reference/alchemy-sdk-api-surface-overview#api-surface
 
 
-function App() {  
+function Home() {
   const [latestBlocks, setLatestBlocks] = useState();
   const [latestTransactions, setLatestTranscations] = useState([])
 
@@ -31,16 +31,16 @@ function App() {
 
         //setBlockNumber(currentBlockNumber)        
 
-        for (let i = 0; i < 10; i++){
+        for (let i = 0; i < 10; i++) {
           const block = await alchemy.core.getBlock(currentBlockNumber - i);
           console.log(block);
-          
+
           blockArray.push(block);
         }
-        
+
         //console.log(blockArray);
 
-       
+
         setLatestBlocks(blockArray);
 
       }
@@ -62,7 +62,7 @@ function App() {
         console.error('Error fetching block data:', error.message);
       }
 
-    }    
+    }
 
     getLatestBlocks()
     getLatestTransactions()
@@ -73,38 +73,38 @@ function App() {
     <div className="App container">
       <div className="d-flex justify-content-between flex-wrap">
         <div className="block-container p-3 flex-grow-1 me-2 mb-3">
-        
+
           <h3>Latest Blocks</h3>
           {!latestBlocks ? (
             <div> Loading... </div>
-        ) : (
-          <>
-          <table className="table table-striped">
-            <thead>
-              <tr>
-                <th>Block</th>
-                <th>Fee Recipient</th>
-                <th>Transactions</th>               
-              </tr>
-            </thead>
-            <tbody>
-              {latestBlocks.map((block, i) => (
-                <tr key={i}>
-                  <td>
-                    <Link to={`/block/${block.number}`}>{block.number}</Link>
-                  </td>
-                  <td>
-                    <Link to={`/address/${block.miner}`}>
-                      {block.miner.slice(0, 10)}...
-                    </Link>
-                  </td>
-                  <td>{block.transactions.length}</td>                
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          </>
-        )}
+          ) : (
+            <>
+              <table className="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Block</th>
+                    <th>Fee Recipient</th>
+                    <th>Transactions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {latestBlocks.map((block, i) => (
+                    <tr key={i}>
+                      <td>
+                        <Link to={`/block/${block.number}`}>{block.number}</Link>
+                      </td>
+                      <td>
+                        <Link to={`/address/${block.miner}`}>
+                          {block.miner.slice(0, 10)}...
+                        </Link>
+                      </td>
+                      <td>{block.transactions.length}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </>
+          )}
         </div>
 
         <div className="block-container p-3 flex-grow-1 mb-3">
@@ -152,4 +152,4 @@ function App() {
 
 }
 
-export default App;
+export default Home;
