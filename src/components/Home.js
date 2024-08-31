@@ -70,7 +70,7 @@ function App() {
 
 
   return (
-    <div className="App container mt-5">
+    <div className="App container">
       <div className="d-flex justify-content-between flex-wrap">
         <div className="block-container p-3 flex-grow-1 me-2 mb-3">
         

@@ -1,5 +1,12 @@
 .App {
   text-align: center;
+  padding: 0;
+  margin: 0;
+}
+
+.container {
+  padding-left: 10px; /* Adjust these values as needed */
+  padding-right: 10px; /* Adjust these values as needed */
 }
 
 .App-logo {
@@ -42,12 +49,12 @@
   background-color: #c7ced4;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  width: 48%; /* Ensures two blocks fit side by side */
+  width: 49%; /* Ensures two blocks fit side by side */
 }
 
 .d-flex {
   display: flex;
-  gap: 20px; /* Space between the two blocks */
+  gap: 10px; /* Space between the two blocks */
 }
 
 @media (max-width: 768px) {

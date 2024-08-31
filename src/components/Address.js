@@ -112,10 +112,11 @@ const Address = () => {
                 </tbody>
             </table>
             <br />
+            <div className="d-flex justify-content-between flex-wrap">
             {!transactions ? (
                 <div>Loading...</div>
             ) : (
-                <>
+                <div className="block-container p-3 flex-grow-1 me-2 mb-3">
                     <h3>Transactions</h3>
                     <table className="table table-striped">
                         <thead>
@@ -149,8 +150,9 @@ const Address = () => {
                             ))}
                         </tbody>
                     </table>
-                </>
+                </div>
             )}
+            <div className="block-container p-3 flex-grow-1 me-2 mb-3">
             <h3>Tokens</h3>
             {tokens.length === 0 ? (
                 ''
@@ -179,6 +181,8 @@ const Address = () => {
                 </table>
 
             )}
+            </div>
+            </div>
 
         </div>
     )
