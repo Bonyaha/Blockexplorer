@@ -1,79 +1,35 @@
-import { Alchemy, Network } from 'alchemy-sdk';
-import { useEffect, useState } from 'react';
-
+import React from 'react';
+import { Route, Routes, Link } from 'react-router-dom';
+import './index.css';
 import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-// Refer to the README doc for more information about using API
-// keys in client-side code. You should never do this in production
-// level code.
-const settings = {
-  apiKey: process.env.REACT_APP_ALCHEMY_API_KEY,
-  network: Network.ETH_MAINNET,
-};
+import Home from './components/Home.js';
+import Block from './components/Block.js';
+import Address from './components/Address.js';
+import BlockTransactions from './components/BlockTransactions.js';
+import Transaction from './components/Transaction.js';
 
 
-// In this week's lessons we used ethers.js. Here we are using the
-// Alchemy SDK is an umbrella library with several different packages.
-//
-// You can read more about the packages here:
-//   https://docs.alchemy.com/reference/alchemy-sdk-api-surface-overview#api-surface
-const alchemy = new Alchemy(settings);
 
-function App() {
-  const [blockNumber, setBlockNumber] = useState();
-  const [blockDetails, setBlockDetails] = useState();
-  const [transactions, setTransactions] = useState([]);
-  const [selectedTransaction, setSelectedTransaction] = useState(null);
 
-  useEffect(() => {
-    async function fetchBlockData() {
-      const currentBlockNumber = await alchemy.core.getBlockNumber();
-      const block = await alchemy.core.getBlockWithTransactions();
-      console.log(currentBlockNumber);
-      console.log(block);
+const App = () => {
+    return (
+        <div className="App container mt-5">
+            <Link to={`/`} className="text-decoration-none"><h1 className="text-center mb-4">Ethereum Block Explorer</h1></Link>
 
-      setBlockNumber(currentBlockNumber);
-      setBlockDetails(block)
-      setTransactions(block.transactions)
-    }
-
-    fetchBlockData();
-  }, []);
-
-  return (
-    <div className="App">
-      <h1>Ethereum Block Explorer</h1>
-      <div>
-        <h2>Current Block Number: {blockNumber}</h2>
-        {blockDetails && (
-          <div>
-            <h3>Block details:</h3>
-            <p>Hash: {blockDetails.hash}</p>
-            <p>Timestamp: {new Date(blockDetails.timestamp * 1000).toLocaleString()}</p>
-            <p>Transactions: {blockDetails.transactions.length}</p>
-          </div>
-        )}
-        <h3>Transactions</h3>
-        <ul>
-          {transactions.map(tx=>(
-              <li key={tx.hash} onClick={() => setSelectedTransaction(tx)}>
-                Transaction hash: {tx.hash}
-              </li>
-          )
-          )}
-        </ul>
-        {selectedTransaction && (
-          <div>
-            <h4>Transaction Details</h4>
-            <p>Hash: {selectedTransaction.hash}</p>
-            <p>From: {selectedTransaction.from}</p>
-            <p>To: {selectedTransaction.to}</p>
-            <p>Value: {selectedTransaction.value.toString()} wei</p>
-          </div>
-        )}
-      </div>
-    </div>
-  )
+            <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/block/:id" element={<Block />} />
+                <Route path="/address/:id" element={<Address />} />
+                <Route path="/blockTransactions/:id" element={<BlockTransactions />} />
+                <Route path="/transaction/:id" element={<Transaction />} />
+            </Routes>
+        </div>
+    )
 }
 
-export default App;
+
+
+export default App
+
