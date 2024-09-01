@@ -2,7 +2,7 @@ import alchemy from '../alchemyInstance'
 import { Utils } from 'alchemy-sdk';
 import { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
-
+import axios from 'axios';
 
 // Refer to the README doc for more information about using API
 // keys in client-side code. You should never do this in production
@@ -16,10 +16,76 @@ import { Link } from "react-router-dom";
 // You can read more about the packages here:
 //   https://docs.alchemy.com/reference/alchemy-sdk-api-surface-overview#api-surface
 
+const GasInfo = () => {
+  const [ethPrice, setEthPrice] = useState(null);
+  const [gasInfo, setGasInfo] = useState({ baseFee: null, priorityFee: null, gas: null })
+
+  useEffect(() => {
+    const fetchGasInfo = async () => {
+      try {
+        const apiKey = process.env.REACT_APP_ETHERSCAN_API_KEY;
+        const response = await axios.get(`https://api.etherscan.io/api`, {
+          params: {
+            module: 'stats',
+            action: 'ethprice',
+            apikey: apiKey,
+          },
+        });
+        const ethUsd = response.data.result.ethusd;
+        const formattedEthPrice = new Intl.NumberFormat("en-US", {
+          style: "currency",
+          currency: "USD",
+        }).format(ethUsd)
+
+        setEthPrice(formattedEthPrice);
+
+        const currentBlock = await alchemy.core.getBlock('latest');
+        const maxPriorityFeePerGas = await alchemy.transact.getMaxPriorityFeePerGas();
+
+        const baseFeePerGas = Utils.formatUnits(currentBlock.baseFeePerGas, 'gwei');        
+        const priorityFee = Utils.formatUnits(maxPriorityFeePerGas, 'gwei');
+        const gas = parseFloat(baseFeePerGas) + parseFloat(priorityFee)
+
+        setGasInfo({
+          baseFee: baseFeePerGas,
+          priorityFee: priorityFee,
+          gas: gas.toFixed(3),
+        })
+
+      } catch (error) {
+        console.error('Error fetching gas info:', error.message);
+      }
+    }
+
+    fetchGasInfo()
+  }, [])
+
+  return (
+    <div className="gas-info-container">
+  <div className="eth-price">
+    ETH Price: {ethPrice ? ethPrice : 'Loading...'}
+  </div>
+  <div className="gas-price">
+    <i className="fas fa-gas-pump"></i>
+    Gas: {gasInfo.gas ? `${gasInfo.gas} Gwei` : 'Loading...'}
+    <div className="gas-tooltip">
+      <span>Base Fee: {gasInfo.baseFee} Gwei</span>
+      <span>Priority Fee: {gasInfo.priorityFee} Gwei</span>
+    </div>
+  </div>
+</div>
+
+  )
+}
+
+
 
 function Home() {
   const [latestBlocks, setLatestBlocks] = useState();
   const [latestTransactions, setLatestTranscations] = useState([])
+  const [ethPrice, setEthPrice] = useState(null);
+  /* const [baseFee, setBaseFee] = useState(null);
+  const [priorityFee, setPriorityFee] = useState(null); */
 
   useEffect(() => {
     let blockArray = [];
@@ -33,22 +99,16 @@ function Home() {
 
         for (let i = 0; i < 10; i++) {
           const block = await alchemy.core.getBlock(currentBlockNumber - i);
-          console.log(block);
+          //console.log(block);
 
           blockArray.push(block);
         }
-
         //console.log(blockArray);
-
-
         setLatestBlocks(blockArray);
-
       }
       catch (error) {
         console.error('Error fetching block data:', error.message);
-
       }
-
     }
 
     const getLatestTransactions = async () => {
@@ -56,24 +116,73 @@ function Home() {
         const block = await alchemy.core.getBlockWithTransactions();
         const latestTransactions = block.transactions.slice(0, 10)
         setLatestTranscations(latestTransactions)
-        console.log(latestTransactions);
+        console.log('latestTransactions are: ', latestTransactions);
       }
       catch (error) {
         console.error('Error fetching block data:', error.message);
       }
-
     }
+
+    /* const fetchEthPrice = async () => {
+      try {
+        const apiKey = process.env.REACT_APP_ETHERSCAN_API_KEY;
+        const response = await axios.get(`https://api.etherscan.io/api`, {
+          params: {
+            module: 'stats',
+            action: 'ethprice',
+            apikey: apiKey,
+          },
+        });
+        const ethUsd = response.data.result.ethusd;
+        setEthPrice(ethUsd);
+      } catch (error) {
+        console.error('Error fetching ETH price:', error.message);
+      }
+    } */
+
+    /* const fetchGasFees = async () => {
+      try {
+        const latestBlock = await alchemy.core.getBlock('latest');
+        setBaseFee(Utils.formatUnits(latestBlock.baseFeePerGas, 'gwei'));
+
+        const estimatedPriorityFee = await alchemy.transact.getMaxPriorityFeePerGas();
+        console.log('priority fee: ', estimatedPriorityFee);
+
+        setPriorityFee(Utils.formatUnits(estimatedPriorityFee, 'gwei'));
+
+      } catch (error) {
+        console.error('Error fetching gas fees:', error.message);
+      }
+    } */
 
     getLatestBlocks()
     getLatestTransactions()
+    //fetchEthPrice()
+    //fetchGasFees()
   }, [])
+
+  const formattedEthPrice = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  }).format(ethPrice)
+
+  /* console.log('ethPrice: ', ethPrice);
+  console.log('latestBlocks: ', latestBlocks);
+  console.log('transactions: ', latestTransactions); */
+
 
 
   return (
     <div className="App container">
-      <div className="d-flex justify-content-between flex-wrap">
-        <div className="block-container p-3 flex-grow-1 me-2 mb-3">
+      {/* <h4>{formattedEthPrice}</h4>
+      <i className="fas fa-gas-pump"></i>
+      <h4>{baseFee}</h4>
+      <h4>{priorityFee}</h4> */}
+       <GasInfo />
 
+      <div className="d-flex justify-content-between flex-wrap">
+
+        <div className="block-container p-3 flex-grow-1 me-2 mb-3">
           <h3>Latest Blocks</h3>
           {!latestBlocks ? (
             <div> Loading... </div>

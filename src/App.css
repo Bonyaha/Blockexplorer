@@ -78,3 +78,71 @@ table {
   border-spacing: 0 10px; /* Space between columns and rows */
   border-collapse: separate; /* Allows border-spacing to work */
 }
+
+
+
+.gas-info-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f5f5f5;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+.eth-price {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.gas-price {
+  display: flex;
+  align-items: center;
+  position: relative;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.gas-price i {
+  font-size: 24px;
+  margin-right: 5px;
+  color: #333;
+}
+
+.gas-tooltip {
+  display: none;
+  position: absolute;
+  bottom: -50px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  z-index: 1;
+  white-space: nowrap;
+  font-size: 12px;
+  
+}
+
+.gas-price:hover .gas-tooltip {
+  display: block;
+}
+
+.gas-tooltip::before {
+  content: "";
+  position: absolute;
+  top: -10px; /* Position the arrow on top of the tooltip */
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent #333 transparent;
+}
+
+.gas-tooltip span {
+  display: block;
+}

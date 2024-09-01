@@ -22,11 +22,12 @@ const Transaction = () => {
     //console.log(Utils.formatEther(value));
 
     let txFee
+    let transactionGasUsed
 
     useEffect(() => {
         const getTransaction = async () => {
             const transaction = await alchemy.core.getTransactionReceipt(id)
-            console.log(transaction)
+
             setTransaction(transaction)
 
             const block = await alchemy.core.getBlockWithTransactions(transaction.blockHash)
@@ -70,7 +71,7 @@ const Transaction = () => {
 
     }, [id])
 
-    
+
     const formatTimestamp = (timestamp) => {
         const date = new Date(timestamp * 1000); // Convert to milliseconds
         const formattedDate = format(date, "MMM-dd-yyyy hh:mm:ss a 'UTC'"); // e.g., Aug-27-2024 05:39:35 AM UTC
@@ -79,12 +80,12 @@ const Transaction = () => {
         return `${relativeTime} (${formattedDate})`;
     }
 
-    const transactionGasUsed = new Intl.NumberFormat("en-US").format(transaction.gasUsed)
-    
-
     if (transaction) {
         txFee = Utils.formatEther(transaction.gasUsed.mul(transaction.effectiveGasPrice))
+        transactionGasUsed = new Intl.NumberFormat("en-US").format(transaction.gasUsed)
     }
+
+    console.log('transaction: ', transaction);
 
     return (
         <div className="App container mt-5">
