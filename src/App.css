@@ -154,6 +154,7 @@ table {
   display: flex;
   align-items: center;
   gap: 10px;
+  justify-content: flex-end; /* Aligns content to the right */
 }
 
 .block-number {
@@ -210,3 +211,9 @@ table {
   border-style: solid;
   border-color: transparent transparent #333 transparent;
 }
+
+.confirmations {
+  font-size: 14px;
+  color: #6c757d; /* Optional: you can style the confirmation count differently */
+}
+

@@ -125,7 +125,8 @@ const Transaction = () => {
                             <tr>
                                 <td className="text-start">Block Number: </td>
                                 <td className="text-end">
-                                    <div className="block-status">
+
+                                    <div className="block-status d-flex justify-content-end">
                                         <div className="block-number">
                                             <i className={transaction.confirmations >= 100 ? "fas fa-check-circle finalized-icon" : "fas fa-hourglass-half unfinalized-icon"}></i>
                                             <Link to={`/block/${transaction.blockNumber}`}>{transaction.blockNumber}</Link>
@@ -136,10 +137,11 @@ const Transaction = () => {
                                                 }
                                             </div>
                                         </div>
-                                        <span className="badge bg-secondary ms-2">
+                                        <div className="confirmations ms-2">
                                             {transaction.confirmations} Block Confirmations
-                                        </span>
+                                        </div>
                                     </div>
+
                                 </td>
                             </tr>
                             <tr>
