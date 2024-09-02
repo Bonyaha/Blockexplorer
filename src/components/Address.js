@@ -107,7 +107,7 @@ const Address = () => {
                     <table className="table table-striped">
                         <thead>
                             <tr>
-                                <th className="text-middle">
+                                <th>
                                     Address
                                 </th>
                                 <th>
@@ -117,46 +117,13 @@ const Address = () => {
                         </thead>
                         <tbody>
                             <tr>
-                                <td className="text-middle">{id}</td>
-                                <td className="text-middle" >{formattedBalance} ETH ({formattedBalanceUsd})</td>
+                                <td>{id}</td>
+                                <td>{formattedBalance} ETH ({formattedBalanceUsd})</td>
                             </tr>
 
                         </tbody>
                     </table>
                 </div> 
-
-                
-
-                <div className="block-container p-3 flex-grow-1 me-2 mb-3">
-                    <h3>Tokens</h3>
-                    {tokens.length === 0 ? (
-                        <div> Loading... </div>
-                    ) : (
-                        <table className="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Symbol</th>
-                                    <th>Balance</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {tokens.map((token, i) => (
-                                    <tr key={i}>
-                                        <td>
-                                            {token.name}
-                                        </td>
-                                        <td>
-                                            {token.symbol}
-                                        </td>
-                                        <td>{token.balance}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-
-                    )}
-                </div>
 
                 <div className="block-container p-3 flex-grow-1 mb-3">
                 <h3>Transactions</h3>
@@ -197,6 +164,37 @@ const Address = () => {
                                 </tbody>
                             </table>
                        
+                    )}
+                </div>
+
+                <div className="block-container p-3 flex-grow-1 me-2 mb-3">
+                    <h3>Tokens</h3>
+                    {tokens.length === 0 ? (
+                        <div> Loading... </div>
+                    ) : (
+                        <table className="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Symbol</th>
+                                    <th>Balance</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {tokens.map((token, i) => (
+                                    <tr key={i}>
+                                        <td>
+                                            {token.name}
+                                        </td>
+                                        <td>
+                                            {token.symbol}
+                                        </td>
+                                        <td>{token.balance}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+
                     )}
                 </div>
             </div>

@@ -1,5 +1,5 @@
 import { format, formatDistanceToNow } from 'date-fns';
-import { Link, useParams, useLocation } from "react-router-dom";
+import { Link, useParams} from "react-router-dom";
 import { useEffect, useState } from "react";
 import alchemy from '../alchemyInstance'
 import axios from 'axios';
@@ -10,13 +10,13 @@ const Transaction = () => {
     const { id } = useParams();
     const [transaction, setTransaction] = useState();
     const [timestamp, setTimestamp] = useState('');
-    const [formattedValue, setFormattedValue] = useState();
-    const [ethPrice, setEthPrice] = useState(0)
+    const [ethPrice, setEthPrice] = useState(0);
+    const [value, setValue] = useState();
 
     //const location = useLocation();
-    let { state: { value } } = useLocation()
+    /* let { state: { value } } = useLocation()
     console.log(value);
-    console.log(typeof value);
+    console.log(typeof value); */
 
 
     //console.log(Utils.formatEther(value));
@@ -27,6 +27,8 @@ const Transaction = () => {
     useEffect(() => {
         const getTransaction = async () => {
             const transaction = await alchemy.core.getTransactionReceipt(id)
+            console.log(transaction);
+            
 
             setTransaction(transaction)
 
@@ -34,6 +36,15 @@ const Transaction = () => {
             //console.log(block)
             const timestamp = block.timestamp
             setTimestamp(timestamp)
+
+            let value
+            
+            for(let i=0;i<block.transactions.length;i++){
+                if(transaction.transactionHash === block.transactions[i].hash){
+                    value = Utils.formatEther(block.transactions[i].value)
+                    setValue(value)
+                }
+            }
         }
         const calculateEthPrice = async () => {
             try {
@@ -59,7 +70,7 @@ const Transaction = () => {
         getTransaction()
         calculateEthPrice()
 
-        if (value !== null) {
+        /* if (value !== null) {
             if (typeof value === 'number') {
                 setFormattedValue(value);
             } else {
@@ -67,7 +78,7 @@ const Transaction = () => {
             }
         } else {
             setFormattedValue('0'); // or '0 ETH' depending on how you want to display it
-        }
+        } */
 
     }, [id])
 
@@ -123,7 +134,7 @@ const Transaction = () => {
                             </tr>
                             <tr>
                                 <td className="text-start">Value: </td>
-                                <td className="text-end">{formattedValue} ETH ({(formattedValue * ethPrice).toFixed(2)} USD)</td>
+                                <td className="text-end">{value} ETH ({(value * ethPrice).toFixed(2)} USD)</td>
                             </tr>
                             <tr>
                                 <td className="text-start">Gas Used: </td>
