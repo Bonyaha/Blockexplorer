@@ -136,9 +136,9 @@ const Transaction = () => {
                                                 }
                                             </div>
                                         </div>
-                                        <div className="confirmations">
+                                        <span className="badge bg-secondary ms-2">
                                             {transaction.confirmations} Block Confirmations
-                                        </div>
+                                        </span>
                                     </div>
                                 </td>
                             </tr>
