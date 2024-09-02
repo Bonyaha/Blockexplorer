@@ -1,5 +1,5 @@
 import { format, formatDistanceToNow } from 'date-fns';
-import { Link, useParams} from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import alchemy from '../alchemyInstance'
 import axios from 'axios';
@@ -28,7 +28,7 @@ const Transaction = () => {
         const getTransaction = async () => {
             const transaction = await alchemy.core.getTransactionReceipt(id)
             console.log(transaction);
-            
+
 
             setTransaction(transaction)
 
@@ -38,9 +38,9 @@ const Transaction = () => {
             setTimestamp(timestamp)
 
             let value
-            
-            for(let i=0;i<block.transactions.length;i++){
-                if(transaction.transactionHash === block.transactions[i].hash){
+
+            for (let i = 0; i < block.transactions.length; i++) {
+                if (transaction.transactionHash === block.transactions[i].hash) {
                     value = Utils.formatEther(block.transactions[i].value)
                     setValue(value)
                 }
@@ -124,7 +124,23 @@ const Transaction = () => {
                             </tr>
                             <tr>
                                 <td className="text-start">Block Number: </td>
-                                <td className="text-end"><Link to={`/block/${transaction.blockNumber}`}>{transaction.blockNumber}</Link><span className="badge bg-secondary ms-2"> {transaction.confirmations} Block Confirmations </span></td>
+                                <td className="text-end">
+                                    <div className="block-status">
+                                        <div className="block-number">
+                                            <i className={transaction.confirmations >= 100 ? "fas fa-check-circle finalized-icon" : "fas fa-hourglass-half unfinalized-icon"}></i>
+                                            <Link to={`/block/${transaction.blockNumber}`}>{transaction.blockNumber}</Link>
+                                            <div className="block-tooltip">
+                                                {transaction.confirmations >= 100
+                                                    ? "This block is finalized and cannot be reverted without slashing at least 1/3 of all validators' stake."
+                                                    : "This block is unfinalized and may be susceptible to reorgs."
+                                                }
+                                            </div>
+                                        </div>
+                                        <div className="confirmations">
+                                            {transaction.confirmations} Block Confirmations
+                                        </div>
+                                    </div>
+                                </td>
                             </tr>
                             <tr>
                                 <td className="text-start">Timestamp: </td>

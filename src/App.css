@@ -79,7 +79,7 @@ table {
   border-collapse: separate; /* Allows border-spacing to work */
 }
 
-
+/* Home.js */
 
 .gas-info-container {
   display: flex;
@@ -145,4 +145,68 @@ table {
 
 .gas-tooltip span {
   display: block;
+}
+
+
+/* Transaction.js */
+
+.block-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.block-number {
+  display: flex;
+  align-items: center;
+  position: relative;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.block-number i {
+  font-size: 20px;
+  margin-right: 5px;
+  color: #333;
+}
+
+.finalized-icon {
+  color: green;
+}
+
+.unfinalized-icon {
+  color: gray;
+}
+
+.block-tooltip {
+  display: none;
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  z-index: 1;
+  white-space: nowrap;
+  font-size: 12px;
+  width: max-content;
+  max-width: 250px;
+}
+
+.block-number:hover .block-tooltip {
+  display: block;
+}
+
+.block-tooltip::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent #333 transparent;
 }
