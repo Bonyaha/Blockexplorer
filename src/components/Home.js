@@ -42,7 +42,7 @@ const GasInfo = () => {
         const currentBlock = await alchemy.core.getBlock('latest');
         const maxPriorityFeePerGas = await alchemy.transact.getMaxPriorityFeePerGas();
 
-        const baseFeePerGas = Utils.formatUnits(currentBlock.baseFeePerGas, 'gwei');        
+        const baseFeePerGas = Utils.formatUnits(currentBlock.baseFeePerGas, 'gwei');
         const priorityFee = Utils.formatUnits(maxPriorityFeePerGas, 'gwei');
         const gas = parseFloat(baseFeePerGas) + parseFloat(priorityFee)
 
@@ -62,18 +62,18 @@ const GasInfo = () => {
 
   return (
     <div className="gas-info-container">
-  <div className="eth-price">
-    ETH Price: {ethPrice ? ethPrice : 'Loading...'}
-  </div>
-  <div className="gas-price">
-    <i className="fas fa-gas-pump"></i>
-    Gas: {gasInfo.gas ? `${gasInfo.gas} Gwei` : 'Loading...'}
-    <div className="gas-tooltip">
-      <span>Base Fee: {gasInfo.baseFee} Gwei</span>
-      <span>Priority Fee: {gasInfo.priorityFee} Gwei</span>
+      <div className="eth-price">
+        ETH Price: {ethPrice ? ethPrice : 'Loading...'}
+      </div>
+      <div className="gas-price">
+        <i className="fas fa-gas-pump"></i>
+        Gas: {gasInfo.gas ? `${gasInfo.gas} Gwei` : 'Loading...'}
+        <div className="gas-tooltip">
+          <span>Base Fee: {gasInfo.baseFee} Gwei</span>
+          <span>Priority Fee: {gasInfo.priorityFee} Gwei</span>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
 
   )
 }
@@ -84,7 +84,7 @@ function Home() {
   const [latestBlocks, setLatestBlocks] = useState();
   const [latestTransactions, setLatestTranscations] = useState([])
   const [ethPrice, setEthPrice] = useState(null);
-  
+
   useEffect(() => {
     let blockArray = [];
 
@@ -138,7 +138,7 @@ function Home() {
 
   return (
     <div className="App container">
-       <GasInfo />
+      <GasInfo />
 
       <div className="d-flex justify-content-between flex-wrap">
 
