@@ -1,7 +1,7 @@
 import { useParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import alchemy from '../alchemyInstance'
-import { Utils } from 'alchemy-sdk';
+import { Contract, Utils } from 'alchemy-sdk';
 import axios from 'axios';
 
 const Address = () => {
@@ -10,6 +10,7 @@ const Address = () => {
     const [tokens, setTokens] = useState([])
     const [transactions, setTransactions] = useState([])
     const [ethPrice, setEthPrice] = useState(0)
+    const [addressType,setAddressType] = useState('')
 
 
     useEffect(() => {
@@ -56,7 +57,7 @@ const Address = () => {
                 //console.log(transfers.transfers[1].value.toString().slice(0,10));
 
                 setTransactions(transfers.transfers)
-                console.log(transfers.transfers[0]);
+                //console.log(transfers.transfers[0]);
             } catch (error) {
                 console.error('Error fetching transactions:', error);
                 return [];
@@ -83,14 +84,32 @@ const Address = () => {
             }
         }
 
+       const checkAddressType = async (address) => {
+            try {
+              const code = await alchemy.core.getCode(address);
+          
+              if (code === '0x') {
+                console.log(`${address} is a simple externally owned address (EOA).`);
+                setAddressType('EOA');
+              } else {
+                console.log(`${address} is a smart contract address.`);
+                setAddressType('Contract');
+              }
+            } catch (error) {
+              console.error('Error checking address type:', error);
+              throw error;
+            }
+          }
+
         getAddress()
         getAllTransactionsFromAddress(id)
         calculateEthPrice()
+        checkAddressType(id)
     }, [id])
 
     //console.log("id: ", id);
-    //console.log("balance: ", balance);
-    //console.log("tokens Array: ", tokens);
+    console.log("balance: ", balance);
+    console.log("address: ", addressType);
 
 
     const formattedBalance = new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 }).format(balance)
@@ -108,7 +127,7 @@ const Address = () => {
                         <thead>
                             <tr>
                                 <th>
-                                    Address
+                                   {addressType === 'EOA' ? 'Address' : 'Contract'}
                                 </th>
                                 <th>
                                     Balance

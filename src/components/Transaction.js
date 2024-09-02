@@ -113,8 +113,18 @@ const Transaction = () => {
                                 <td className="text-end">{transaction.transactionHash}</td>
                             </tr>
                             <tr>
+                                <td className="text-start">Status: </td>
+                                <td className="text-end">
+                                    {transaction.status === 1 ? (
+                                        <span className="badge bg-success">Success</span>
+                                    ) : (
+                                        <span className="badge bg-danger">Failed</span>
+                                    )}
+                                </td>
+                            </tr>
+                            <tr>
                                 <td className="text-start">Block Number: </td>
-                                <td className="text-end"><Link to={`/block/${transaction.blockNumber}`}>{transaction.blockNumber}</Link><span className="badge bg-secondary ms-2"> {transaction.confirmations}Block Confirmations </span></td>
+                                <td className="text-end"><Link to={`/block/${transaction.blockNumber}`}>{transaction.blockNumber}</Link><span className="badge bg-secondary ms-2"> {transaction.confirmations} Block Confirmations </span></td>
                             </tr>
                             <tr>
                                 <td className="text-start">Timestamp: </td>
