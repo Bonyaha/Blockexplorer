@@ -128,18 +128,21 @@ const Transaction = () => {
 
                                     <div className="block-status d-flex justify-content-end">
                                         <div className="block-number">
-                                            <i className={transaction.confirmations >= 100 ? "fas fa-check-circle finalized-icon" : "fas fa-hourglass-half unfinalized-icon"}></i>
-                                            <Link to={`/block/${transaction.blockNumber}`}>{transaction.blockNumber}</Link>
-                                            <div className="block-tooltip">
-                                                {transaction.confirmations >= 100
-                                                    ? "This block is finalized and cannot be reverted without slashing at least 1/3 of all validators' stake."
-                                                    : "This block is unfinalized and may be susceptible to reorgs."
-                                                }
+                                            <div className="icon-tooltip-wrapper">
+                                                <i className={transaction.confirmations >= 100 ? "fas fa-check-circle finalized-icon" : "fas fa-hourglass-half unfinalized-icon"}></i>
+                                                <div className="block-tooltip">
+                                                    {transaction.confirmations >= 100
+                                                        ? "This block is finalized and cannot be reverted without slashing at least 1/3 of all validators' stake."
+                                                        : "This block is unfinalized and may be susceptible to reorgs."
+                                                    }
+                                                </div>
                                             </div>
+                                            <Link to={`/block/${transaction.blockNumber}`} className="ms-2">{transaction.blockNumber}</Link>
                                         </div>
-                                        <div className="confirmations ms-2">
+
+                                        <span className="badge bg-secondary ms-2">
                                             {transaction.confirmations} Block Confirmations
-                                        </div>
+                                        </span>
                                     </div>
 
                                 </td>

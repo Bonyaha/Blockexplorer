@@ -150,17 +150,21 @@ table {
 
 /* Transaction.js */
 
-.block-status {
+ .block-status {
   display: flex;
   align-items: center;
   gap: 10px;
-  justify-content: flex-end; /* Aligns content to the right */
+  justify-content: flex-end;
+}
+
+ .icon-tooltip-wrapper {
+  position: relative;
+  display: inline-block;
 }
 
 .block-number {
   display: flex;
   align-items: center;
-  position: relative;
   font-size: 18px;
   font-weight: bold;
 }
@@ -169,42 +173,37 @@ table {
   font-size: 20px;
   margin-right: 5px;
   color: #333;
+  cursor: pointer; /* Make the icon a clickable pointer */
 }
-
-.finalized-icon {
-  color: green;
-}
-
-.unfinalized-icon {
-  color: gray;
+.block-number a {
+  text-decoration: none;
 }
 
 .block-tooltip {
   display: none;
   position: absolute;
-  top: -40px;
+  top: 100%; /* Position below the icon */
   left: 50%;
   transform: translateX(-50%);
   background-color: #333;
   color: #fff;
   text-align: center;
   border-radius: 6px;
-  padding: 5px;
+  padding: 5px 8px;
   z-index: 1;
   white-space: nowrap;
   font-size: 12px;
-  width: max-content;
-  max-width: 250px;
+  margin-top: 10px;
 }
 
-.block-number:hover .block-tooltip {
+.icon-tooltip-wrapper:hover .block-tooltip {
   display: block;
 }
 
 .block-tooltip::before {
   content: "";
   position: absolute;
-  top: -10px;
+  bottom: 100%;
   left: 50%;
   transform: translateX(-50%);
   border-width: 5px;
@@ -212,8 +211,11 @@ table {
   border-color: transparent transparent #333 transparent;
 }
 
-.confirmations {
-  font-size: 14px;
-  color: #6c757d; /* Optional: you can style the confirmation count differently */
+.finalized-icon {
+  color: green !important;
+}
+
+.unfinalized-icon {
+  color: gray !important;
 }
 
