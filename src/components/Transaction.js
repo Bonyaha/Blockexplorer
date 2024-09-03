@@ -123,7 +123,7 @@ const Transaction = () => {
                                 </td>
                             </tr>
                             <tr>
-                                <td className="text-start">Block Number: </td>
+                                <td className="text-start">Block: </td>
                                 <td className="text-end">
 
                                     <div className="block-status d-flex justify-content-end">

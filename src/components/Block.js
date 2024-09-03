@@ -108,7 +108,7 @@ const Block = () => {
                         <td>Block Status:</td>
                         <td className="text-end">
                             <span className={`badge ${isFinalized ? "bg-success" : "bg-secondary"}`}>
-                                <i className={`me-1 ${isFinalized ? "fas fa-check-circle finalized-icon" : "fas fa-hourglass-half unfinalized-icon"}`}></i>
+                                <i className={`me-1 ${isFinalized ? "fas fa-check-circle finalized-icon-block" : "fas fa-hourglass-half unfinalized-icon-block"}`}></i>
                                 {isFinalized ? "Finalized" : "Unfinalized"}
                             </span>
                         </td>

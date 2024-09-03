@@ -170,8 +170,7 @@ table {
 }
 
 .block-number i {
-  font-size: 20px;
-  margin-right: 5px;
+  font-size: 20px;  
   color: #333;
   cursor: pointer; /* Make the icon a clickable pointer */
 }
@@ -211,11 +210,14 @@ table {
   border-color: transparent transparent #333 transparent;
 }
 
-.finalized-icon {
+.finalized-icon::before {
+  font-size: 15px;
   color: green !important;
+  
 }
 
-.unfinalized-icon {
+.unfinalized-icon::before {
+  font-size: 15px;
   color: gray !important;
 }
 
@@ -230,13 +232,13 @@ table {
   border-radius: 5px;
 }
 
-.finalized-icon::before {
+.finalized-icon-block::before {
   font-size: 15px; 
   color: white;
   margin-right: 3px;
 }
 
-.unfinalized-icon::before {
+.unfinalized-icon-block::before {
   font-size: 12px;
   color: rgb(61, 59, 59);
   margin-right: 3px;
