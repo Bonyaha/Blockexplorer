@@ -8,6 +8,7 @@ import { Utils } from 'alchemy-sdk';
 const Block = () => {
     const { id } = useParams();
     const [block, setBlock] = useState(null);
+    const [isFinalized, setIsFinalized] = useState(false);
     //console.log(id)
 
     useEffect(() => {
@@ -18,6 +19,10 @@ const Block = () => {
 
             const blockWithReward = { ...block, reward: blockReward }
             setBlock(blockWithReward)
+
+            // Check block finality
+            const finalityStatus = checkBlockFinality(block.timestamp);
+            setIsFinalized(finalityStatus);
         }
 
         const calculateBlockReward = async (blockNumber) => {
@@ -47,6 +52,12 @@ const Block = () => {
                 console.error('Error fetching block reward data:', error.message);
             }
         }
+        const checkBlockFinality = (timestamp) => {
+            const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
+            const timeDifference = currentTime - timestamp;
+            return timeDifference >= 900; // Finality threshold of 15 minutes (900 seconds)
+        }
+
         getBlock()
     }, [id])
 
@@ -60,9 +71,9 @@ const Block = () => {
         return `${relativeTime} (${formattedDate})`;
     }
 
-   /*  const formatNumber = (num) => {
-        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','); // Add commas as thousands separators
-    } */
+    /*  const formatNumber = (num) => {
+         return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','); // Add commas as thousands separators
+     } */
 
     const calculateGasPercentage = (gasUsed, gasLimit) => {
         return ((gasUsed / gasLimit) * 100).toFixed(2); // Calculate percentage and round to 2 decimal places
@@ -79,18 +90,28 @@ const Block = () => {
     return (
         <div className="App container mt-5">
             <h3>Block #{block.number}</h3>
-            <Link to={`/block/${block.number - 1}`}>
-                <button className="btn btn-primary me-2">Previous Block</button>
-            </Link>
-            <Link to={`/block/${block.number + 1}`}><button className="btn btn-primary">Next Block</button>
-            </Link>
-
+            <div className="mb-3">
+                <Link to={`/block/${block.number - 1}`}>
+                    <button className="btn btn-primary me-2">Previous Block</button>
+                </Link>
+                <Link to={`/block/${block.number + 1}`}><button className="btn btn-primary">Next Block</button>
+                </Link>
+            </div>
             <table className="table table-striped">
                 <thead></thead>
                 <tbody>
                     <tr>
                         <td>Block Height:</td>
                         <td className="text-end">{block.number}</td>
+                    </tr>
+                    <tr>
+                        <td>Block Status:</td>
+                        <td className="text-end">
+                            <span className={`badge ${isFinalized ? "bg-success" : "bg-secondary"}`}>
+                                <i className={`me-1 ${isFinalized ? "fas fa-check-circle finalized-icon" : "fas fa-hourglass-half unfinalized-icon"}`}></i>
+                                {isFinalized ? "Finalized" : "Unfinalized"}
+                            </span>
+                        </td>
                     </tr>
                     <tr>
                         <td>Timestamp:</td>
